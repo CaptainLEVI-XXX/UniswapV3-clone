@@ -3,14 +3,13 @@ pragma solidity ^0.8.24;
 
 import {Tick} from "./lib/Tick.sol";
 import {Position} from "./lib/Position.sol";
-import {IERC20}from './interfaces/IERC20.sol';
-import {IUniswapV3MintCallback}from './interfaces/IUniswapV3MintCallback.sol';
+import {IERC20} from "./interfaces/IERC20.sol";
+import {IUniswapV3MintCallback} from "./interfaces/IUniswapV3MintCallback.sol";
 
 contract UniswapV3Pool {
-    using Tick for mapping(int24=>Tick.Info);
-    using Position for mapping(bytes32=>Position.Info);
+    using Tick for mapping(int24 => Tick.Info);
+    using Position for mapping(bytes32 => Position.Info);
     using Position for Position.Info;
-
 
     error InvalidTickRange();
     error InvalidAmount();
@@ -57,29 +56,24 @@ contract UniswapV3Pool {
         Position.Info storage position = positions.get(owner, lowerTick, upperTick);
         position.update(amount);
 
-        amount0 = 0.998976618347425280 ether;
+        amount0 = 0.99897661834742528 ether;
         amount1 = 5000 ether;
 
         liquidity += amount;
         uint256 balance0Before;
         uint256 balance1Before;
 
-        if(amount0>0) balance0Before = balance0();
-        if(amount1>0) balance0Before = balance1();
+        if (amount0 > 0) balance0Before = balance0();
+        if (amount1 > 0) balance0Before = balance1();
 
         IUniswapV3MintCallback(msg.sender).uinswapV3MintCallback(amount0, amount1);
-        
- 
-
-
     }
 
-
-    function balance0() public view returns(uint256 balance){
+    function balance0() public view returns (uint256 balance) {
         balance = IERC20(token0).balanceOf(address(this));
     }
 
-    function balance1() public view returns(uint256 balance){
+    function balance1() public view returns (uint256 balance) {
         balance = IERC20(token1).balanceOf(address(this));
     }
 }
